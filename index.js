@@ -4,18 +4,52 @@ const box = document.querySelector(".box");
 
 const input = document.querySelector("input");
 
-const modal = document.querySelector('.modal');
+const modal = document.querySelector(".modal");
 
-const modalBox = document.querySelector('.modalBox');
+const modalBox = document.querySelector(".modalBox");
 
-const close = document.querySelector('.close');
+const close = document.querySelector(".close");
 
+const readItem = JSON.parse(localStorage.getItem("readItem"));
 
+const deletedData = JSON.parse(localStorage.getItem("deletedData"));
 
+const uploadBtnAll = document.querySelectorAll('.uploadBtn')
+
+// **************  Read iteemi yaddashda saxlamaq ucun verilen if sherti  ******************//
+
+if (readItem) {
+  modal.style.display = "flex";
+
+  modal.innerHTML = `
+           
+  <div class="modalBox">
+ <div class="close">X</div>
+  <div class="modalImgBox">
+      <img src=${readItem.image} alt="">
+  </div>
+  <h1>${readItem.category}</h1>
+  <span>${readItem.title}</span>
+  <p>${readItem.price}</p>
+
+</div>
+  
+  `;
+  const close = document.querySelector(".close");
+
+  close.addEventListener("click", () => {
+    modal.style.display = "none";
+    localStorage.removeItem("readItem");
+  });
+}
+
+// *************  Datani getirib ishleden funksiya *************//
 
 fetch("https://fakestoreapi.com/products")
   .then((res) => res.json())
   .then((data) => {
+    //   data = deletedData ? deletedData : data
+  
     function myApi(getdata) {
       if (apiConta) {
         apiConta.innerHTML = "";
@@ -32,49 +66,53 @@ fetch("https://fakestoreapi.com/products")
                     <div class="btnBox">
                     <button id=${item.id} class='readBtn'>Read</button>  
                     <button id=${item.id} class='deleteBtn'>Delete</button>
-                    <button id=${item.id} clas='uploadBtn'>Upload</button>
+                    <button id=${item.id} class='uploadBtn'>Update</button>
                   </div>
                 </div>
                   
                   `;
-                  // id=item.id ona gore edirik ki, hansi buttona klik edeceyikse hemen boxun melumatlarini atsin modala
+                
+                       
+          // id=item.id ona gore edirik ki, hansi buttona klik edeceyikse hemen boxun melumatlarini atsin modala
         });
-        input.addEventListener("input", (e) => {
-          e.preventDefault();
+       
+        // ******** Filter funksiyasini ishletmek ucun ********//
 
-          let filter = data.filter((item) =>
-            item.category.toLowerCase().includes(e.target.value.toLowerCase())
-          );
 
-          myApi(filter);
-        });
-      }
+      input.addEventListener("input", (e) => {
+        e.preventDefault();
 
+        let filter = data.filter((item) =>
+          item.category.toLowerCase().includes(e.target.value.toLowerCase())
+        );
+
+        myApi(filter);
+      });
+      }    
+
+
+
+
+      // ******************   Detail html sehifesine yonlendiren funksiya ********//
 
       const Allbox = document.querySelectorAll(".imgBox");
-   
- 
+
       [...Allbox].map((item) => {
-  
         item.addEventListener("click", function () {
-  
-         
-  
           let newData = data.find((item) => item.id == this.id);
-       
+
           localStorage.setItem("newData", JSON.stringify(newData));
-  
+
           location.href = "./detail.html";
         });
-      })
+      });
 
       let localData = JSON.parse(localStorage.getItem("newData"));
 
-const productBox = document.querySelector(".productBox");
+      const productBox = document.querySelector(".productBox");
 
-
-if (productBox) {
-  productBox.innerHTML = `
+      if (productBox) {
+        productBox.innerHTML = `
 
   <div class="detailImgBox">
   <img src=${localData.image} alt="">
@@ -87,53 +125,98 @@ if (productBox) {
   </div>
 
   
-  `
-  const button = document.querySelector("button");
+  `;
+        const button = document.querySelector("button");
 
-  button.addEventListener('click',()=>{
-     
-    location.href = "./index.html"
-  })
-}
-
-
-       // delete button funksionallgi
+        button.addEventListener("click", () => {
+          location.href = "./index.html";
+        });
+      }
 
 
-    const deleteBtn = document.querySelectorAll('.deleteBtn');
+        // ************   Upload button funksionallgi  **********//
 
-    deleteBtn.forEach((item)=>{
-     item.addEventListener('click',((e)=>{
-       const  getID = Number (e.target.getAttribute('id'));
+      const modalUpdate = document.querySelector('.modalUpdate')
+      const closeUpdate = document.querySelector('.closeUpdate')
+      const SubmitForm = document.querySelector('form')
+      const editFile = document.querySelector('.editFile')
+      const editTitle = document.querySelector('.editTitle')
+      const editPrice = document.querySelector('.editPrice')
+      const UpdateBtnAll = document.querySelector('.UpdateBtnAll')
+      const modalUpdateImgBox = document.querySelector('.modalUpdateImgBox img')
+    
+      const uploadBtn = document.querySelectorAll('.uploadBtn')
+
       
- 
-          data = data.filter((item)=> item.id !== getID)
-              
-          myApi(data)
-      }))
       
-    })
-        // read butonuna klik edəndə modalın açılması üçün.
-
-    const readBtn = document.querySelectorAll('.readBtn');
-    const modal = document.querySelector('.modal');
-
-    // let readData = JSON.parse(localStorage.getItem("data"));
-
-    // console.log(readData);
-
-    readBtn.forEach((item)=>{
-      item.addEventListener('click',(e)=>{
-        let  getID = Number (e.target.getAttribute('id'));
-     
-       
-
-        data.map((item)=> {
-         
-          if (item.id == getID) {
-
+            uploadBtn.forEach((item) => {
+              item.addEventListener("click", (e) => {               
+                let getID = Number(e.target.getAttribute("id"));
+                 modalUpdate.style.display='flex'
+                let editBox = data.find((item) => item.id == getID);
            
-            modal.innerHTML = `
+                 modalUpdateImgBox.src = `${editBox.image}`
+                editTitle.value = editBox.title;
+                editPrice.value = editBox.price;
+               SubmitForm.id = editBox.id;
+
+              SubmitForm.addEventListener('submit',(e)=>{
+               e.preventDefault();
+               console.log('salam');
+               let getIDSubmit = Number(e.target.getAttribute("id"));
+               data = data.map((editBox)=>{
+                if(editBox.id === getIDSubmit){
+                  return{
+                    ...editBox,
+                    category: editTitle.value,
+                    price: editPrice.value
+                  }
+                }
+                return editBox
+               })
+               myApi(data)
+                modalUpdate.style.display='none'
+              })
+
+
+              });
+            });
+            
+          
+
+            closeUpdate.addEventListener('click',(e)=>{
+              modalUpdate.style.display='none'
+            })
+
+      // ************   Delete button funksionallgi  **********//
+
+      const deleteBtn = document.querySelectorAll(".deleteBtn");
+
+      deleteBtn.forEach((item) => {
+        item.addEventListener("click", (e) => {
+         
+          const getID = Number(e.target.getAttribute("id"));
+
+          data = data.filter((item) => item.id !== getID);
+
+          myApi(data);
+          localStorage.setItem("deletedData", JSON.stringify(data));
+        });
+      });
+      // ************   Read button funksionallgi  **********//
+
+      const readBtn = document.querySelectorAll(".readBtn");
+      const modal = document.querySelector(".modal");
+
+      readBtn.forEach((item) => {
+        item.addEventListener("click", (e) => {
+          let getID = Number(e.target.getAttribute("id"));
+
+          data.map((item) => {
+            if (item.id == getID) {
+              localStorage.setItem("readItem", JSON.stringify(item));
+
+              modal.innerHTML = `
            
             <div class="modalBox">
            <div class="close">X</div>
@@ -146,90 +229,28 @@ if (productBox) {
 
         </div>
             
-            `
-            // let newData = data.find((item) => item.id == this.id);
-            localStorage.setItem("readData", JSON.stringify(data));
-           
-          
-          }
+            `;
 
-           // x divine  klik edəndə modalın bağlanılması üçün.
+              
+            }
 
-          const close = document.querySelector('.close');
+            // ****** x divine  klik edəndə modalın bağlanılması üçün.******//
 
-          close.addEventListener('click',()=>{
-            modal.style.display='none'
-          })
-      
+            const close = document.querySelector(".close");
 
-        })
-        
+            close?.addEventListener("click", () => {
+              modal.style.display = "none";
+              localStorage.removeItem("readItem");
+            });
+          });
 
-        modal.style.display='flex';
-      })
- 
-
-    });
+          modal.style.display = "flex";
+        });
+      });
 
 
-    
-   
-   
+
     }
     myApi(data);
-
   });
 
-
-    
-      
- 
-
-    // const Allbox = document.querySelectorAll(".imgBox");
-   
- 
-    // [...Allbox].map((item) => {
-
-    //   item.addEventListener("click", function () {
-
-       
-
-    //     let newData = data.find((item) => item.id == this.id);
-     
-    //     localStorage.setItem("newData", JSON.stringify(newData));
-
-    //     location.href = "./detail.html";
-    //   });
-    // })
-    
- 
-
-// let localData = JSON.parse(localStorage.getItem("newData"));
-
-// const productBox = document.querySelector(".productBox");
-
-
-// if (productBox) {
-//   productBox.innerHTML = `
-
-//   <div class="detailImgBox">
-//   <img src=${localData.image} alt="">
-//   </div>
-//   <div class="titleBox">
-//   <h4>${localData.category}</h4>
-//   <span>${localData.title}</span>
-//   <p>Price: ${localData.price} $ </p>
-//   <button>Home Page</button>
-//   </div>
-
-  
-//   `
-//   const button = document.querySelector("button");
-
-//   button.addEventListener('click',()=>{
-     
-//     location.href = "./index.html"
-//   })
-// }
-
-  

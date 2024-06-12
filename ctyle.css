@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    outline: 0;
+    /* outline: 0; */
 }
 
 header{
@@ -12,11 +12,11 @@ header{
     padding-top: 10px;
 }
 
-input{
+.searchDiv input{
     width: 300px;
     padding: 10px;
     border-radius: 5px;
-    border: 2px solid #fff;
+    border: 2px solid #496981;
     cursor: pointer;
 }
 .apiConta{
@@ -49,7 +49,7 @@ input{
     height: 200px;
     
 }
-img{
+.imgBox img{
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -124,14 +124,14 @@ img{
 
 .detailImgBox{
     height: 400px;
-  
+ 
 
 }
 
-.detailImgBox image{
-    height: 100vh;
+.detailImgBox img{
+    height: 100%;
     width: 100%;
-    border: none;
+  object-fit: contain;
 }
 
 .modal{
@@ -146,6 +146,7 @@ img{
     left: 0;
     z-index: 100;
    display: none;
+   text-align: center;
 }
 
 .modalBox{
@@ -154,6 +155,74 @@ img{
     background-color: #fff;
     border-radius: 20px;
     position: relative;
+}
+.modalUpdate{
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.415);
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    z-index: 100;
+  display: none;
+   text-align: center;
+
+}
+
+.modalBoxUpdate{
+    height: 500px;
+    width: 600px;
+    background-color: #fff;
+    border-radius: 20px;
+    position: relative;
+}
+.modalUpdateImgBox{
+    height: 290px;
+    padding: 20px;
+  
+}
+
+.modalUpdateImgBox img{
+  
+height: 100%;
+width: 100%;
+object-fit: contain;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+form input{
+    width: 400px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 2px solid #496981;
+    cursor: pointer;
+}
+form button{
+    width: 100px;
+    height: 35px;
+    border-radius: 5px;
+    background-color: aquamarine;
+    color: red;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+.closeUpdate{
+    font-size: 24px;
+    font-weight: bold;
+    color: rgba(112, 23, 23, 0.94);
+    position: absolute;
+    top: 10px;
+    right: 15px;
+cursor: pointer;
 }
 .close{
         font-size: 24px;
@@ -169,12 +238,14 @@ cursor: pointer;
 
 .modalImgBox{
     height: 400px;
+    padding: 20px;
   
 }
 
-.modalImgBox image{
-    height: 100vh;
-    width: 100%;
-    object-fit: cover;
+.modalImgBox img{
+  
+height: 100%;
+width: 100%;
+object-fit: contain;
 }
 
