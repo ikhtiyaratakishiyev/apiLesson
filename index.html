@@ -10,38 +10,19 @@
 
 <body>
 
-    <div class="modal">
-        <!-- <div class="modalBox">
-            <div class="close">X</div>
-            <div class="modalImgBox">
-                <img class='modalImg' src="" alt="">
-            </div>
-            <h1></h1>
-            <span></span>
-            <p></p>
-
-        </div>  -->
-    </div>
-    <div class="modalUpdate">
-        <div class="modalBoxUpdate">
-            <div class="closeUpdate">X</div>
-            <div class="modalUpdateImgBox">
-                <img  src="" alt="">
-            </div>
-          <form action="">
-            <input class="editFile"  type="file">
-            <input class="editTitle" type="text" placeholder="Please type the title">
-            <input class="editPrice" type="number" placeholder="Please type the price">
-            <button class="UpdateBtnAll">Edit Box</button>
-          </form>
-
-        </div> 
-    </div>
+   
 
     <header class="searchDiv">
         <h1>Search</h1>
-        <input type="text" placeholder="Search">
+        <div class="navRight">
+            <input type="text" placeholder="Search"> 
+            <button class="createBox">Create Box</button>
+        </div>
+       
     </header>
+
+     <!-- Read Modal -->
+
     <div class="apiConta">
       
         <!-- <div class="box">
@@ -56,6 +37,56 @@
                 <button>Delete</button>
                 <button>Upload</button>
             </div> -->
+        </div>
+
+
+        <!-- Update Modal -->
+
+
+        <div class="modal">
+            <!-- <div class="modalBox">
+                <div class="close">X</div>
+                <div class="modalImgBox">
+                    <img class='modalImg' src="" alt="">
+                </div>
+                <h1></h1>
+                <span></span>
+                <p></p>
+    
+            </div>  -->
+        </div>
+        <div class="modalUpdate">
+            <div class="modalBoxUpdate">
+                <div class="closeUpdate">X</div>
+                <div class="modalUpdateImgBox">
+                    <img accept="image/jpg, image/jpeg, image/png"  src="" alt="">
+                </div>
+              <form class="SubmitForm" action="">
+                <input class="editFile"  type="file">
+                <input class="editTitle" type="text" placeholder="Please type the title">
+                <input class="editPrice" type="number" placeholder="Please type the price">
+                <button class="UpdateBtnAll">Edit Box</button>
+              </form>
+    
+            </div> 
+        </div>
+
+         <!-- Create Modal -->
+
+        <div class="addBoxModal">
+            <div class="addBoxModalUpdate">
+                <div class="addBoxModalClose">X</div>
+                <div class="addBoxModalImgBox">
+                    <img  src="" alt="">
+                </div>
+              <form class="submitFormCreate" action="">
+                <input class="editFileCreate"  type="file">
+                <input class="editTitleCreate" type="text" placeholder="Please type the title">
+                <input class="editPriceCreate" type="number" placeholder="Please type the price">
+                <button class="addBoxBtn">Add Box</button>
+              </form>
+    
+            </div> 
         </div>
     
     </div>

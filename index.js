@@ -2,8 +2,6 @@ const apiConta = document.querySelector(".apiConta");
 
 const box = document.querySelector(".box");
 
-const input = document.querySelector("input");
-
 const modal = document.querySelector(".modal");
 
 const modalBox = document.querySelector(".modalBox");
@@ -12,9 +10,11 @@ const close = document.querySelector(".close");
 
 const readItem = JSON.parse(localStorage.getItem("readItem"));
 
-const deletedData = JSON.parse(localStorage.getItem("deletedData"));
+const updatedData = JSON.parse(localStorage.getItem("updatedData"));
 
-const uploadBtnAll = document.querySelectorAll('.uploadBtn')
+const uploadBtnAll = document.querySelectorAll(".uploadBtn");
+
+
 
 // **************  Read iteemi yaddashda saxlamaq ucun verilen if sherti  ******************//
 
@@ -48,8 +48,18 @@ if (readItem) {
 fetch("https://fakestoreapi.com/products")
   .then((res) => res.json())
   .then((data) => {
-    //   data = deletedData ? deletedData : data
-  
+
+    /* LocalStorage hər ikisi data kimi getdiyi üçün 63-64 
+    cü sətrlərdə datanı ayrı ayrı dəyişənlərə mənimsətmək olmur,
+    ona görə delete funksiyasınıda updatetdata key ile yaddaşa verdim ki
+    hər iki funksiyanı bir data dəyişəninə mənimsədə bilim*/
+
+
+
+
+     
+      // data = updatedData ? updatedData : data
+      
     function myApi(getdata) {
       if (apiConta) {
         apiConta.innerHTML = "";
@@ -71,27 +81,24 @@ fetch("https://fakestoreapi.com/products")
                 </div>
                   
                   `;
-                
-                       
+
           // id=item.id ona gore edirik ki, hansi buttona klik edeceyikse hemen boxun melumatlarini atsin modala
         });
-       
+
         // ******** Filter funksiyasini ishletmek ucun ********//
 
+        const input = document.querySelector("input");
 
-      input.addEventListener("input", (e) => {
-        e.preventDefault();
+        input.addEventListener("input", (e) => {
+          e.preventDefault();
 
-        let filter = data.filter((item) =>
-          item.category.toLowerCase().includes(e.target.value.toLowerCase())
-        );
+          let filter = data.filter((item) =>
+            item.category.toLowerCase().includes(e.target.value.toLowerCase())
+          );
 
-        myApi(filter);
-      });
-      }    
-
-
-
+          myApi(filter);
+        });
+      }
 
       // ******************   Detail html sehifesine yonlendiren funksiya ********//
 
@@ -133,77 +140,154 @@ fetch("https://fakestoreapi.com/products")
         });
       }
 
+      // ************   Upload button funksionallgi  **********//
 
-        // ************   Upload button funksionallgi  **********//
+      const modalUpdate = document.querySelector(".modalUpdate");
+      const closeUpdate = document.querySelector(".closeUpdate");
+      const SubmitForm = document.querySelector("form");
+      const editFile = document.querySelector(".editFile");
+      const editTitle = document.querySelector(".editTitle");
+      const editPrice = document.querySelector(".editPrice");
+      const modalUpdateImgBox = document.querySelector(".modalUpdateImgBox img");
 
-      const modalUpdate = document.querySelector('.modalUpdate')
-      const closeUpdate = document.querySelector('.closeUpdate')
-      const SubmitForm = document.querySelector('form')
-      const editFile = document.querySelector('.editFile')
-      const editTitle = document.querySelector('.editTitle')
-      const editPrice = document.querySelector('.editPrice')
-      const UpdateBtnAll = document.querySelector('.UpdateBtnAll')
-      const modalUpdateImgBox = document.querySelector('.modalUpdateImgBox img')
-    
-      const uploadBtn = document.querySelectorAll('.uploadBtn')
+      const uploadBtn = document.querySelectorAll(".uploadBtn");
 
-      
-      
-            uploadBtn.forEach((item) => {
-              item.addEventListener("click", (e) => {               
-                let getID = Number(e.target.getAttribute("id"));
-                 modalUpdate.style.display='flex'
-                let editBox = data.find((item) => item.id == getID);
-           
-                 modalUpdateImgBox.src = `${editBox.image}`
-                editTitle.value = editBox.title;
-                editPrice.value = editBox.price;
-               SubmitForm.id = editBox.id;
+      uploadBtn.forEach((item) => {
+        item.addEventListener("click", (e) => {
+          let getID = Number(e.target.getAttribute("id"));
+          modalUpdate.style.display = "flex";
+          let editBox = data.find((item) => item.id == getID);
 
-              SubmitForm.addEventListener('submit',(e)=>{
-               e.preventDefault();
-               console.log('salam');
-               let getIDSubmit = Number(e.target.getAttribute("id"));
-               data = data.map((editBox)=>{
-                if(editBox.id === getIDSubmit){
-                  return{
-                    ...editBox,
-                    category: editTitle.value,
-                    price: editPrice.value
-                  }
-                }
-                return editBox
-               })
-               myApi(data)
-                modalUpdate.style.display='none'
-              })
+          modalUpdateImgBox.src = `${editBox.image}`;
+          editTitle.value = editBox.title;
+          editPrice.value = editBox.price;
+          SubmitForm.id = editBox.id;
 
+          let updateImg = null;
 
-              });
+          editFile.addEventListener("change", () => {
+            var reader = new FileReader();
+            reader.readAsDataURL(editFile.files[0]);
+            reader.onload = function (e) {
+              var image = new Image();
+              image.src = e.target.result;
+              image.onload = function () {
+                updateImg = image.src;
+              
+              };
+             
+            };
+          });
+
+          SubmitForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            let getIDSubmit = Number(e.target.getAttribute("id"));
+            data = data.map((editBox) => {
+              if (editBox.id === getIDSubmit) {
+                return {
+                  ...editBox,
+                  category: editTitle.value,
+                  price: editPrice.value,
+                  image: updateImg,
+                };
+              }
+             
+              return editBox;
             });
-            
+            localStorage.setItem('updatedData',JSON.stringify(data))
+            myApi(data);
+            modalUpdate.style.display = "none";
+          });
+        });
+      });
+
+      closeUpdate.addEventListener("click", (e) => {
+        modalUpdate.style.display = "none";
+      });
+
+
+      //  ****** Add Button Funksiyasi   *******  //
+
+      const createBox = document.querySelector(".createBox");
+      const addBoxModal = document.querySelector(".addBoxModal");
+      const addBoxModalUpdate = document.querySelector(".addBoxModalUpdate");
+      const addBoxModalClose = document.querySelector(".addBoxModalClose");
+      const addBoxModalImgBox = document.querySelector(".addBoxModalImgBox img");
+      const editFileCreate = document.querySelector(".editFileCreate");
+      const editTitleCreate = document.querySelector(".editTitleCreate");
+      const editPriceCreate = document.querySelector(".editPriceCreate");
+      const submitFormCreate = document.querySelector("form");
+      const addBoxBtn = document.querySelector(".addBoxBtn");
+
+
+      addBoxModalClose.addEventListener("click", () => {
+        addBoxModal.style.display = "none";
+      });
+      createBox.addEventListener("click", () => {
+
+        addBoxModal.style.display = "flex";
+
+        let uploadImg = null;
+
+        editFileCreate.addEventListener("change", () => {
+          var reader = new FileReader();
+          reader.readAsDataURL(editFileCreate.files[0]);
+          reader.onload = function (e) {
+            var image = new Image();
+            image.src = e.target.result;
+            image.onload = function () {
+              uploadImg = image.src;
+           
+            };
           
+          };
+        });
+        addBoxBtn.addEventListener('click',(e)=>{
+          e.preventDefault()
+  
+      
+          const createNewBox = {
+            id: Math.floor(Math.random()*1000),
+            title:editTitleCreate.value,
+            price:editPriceCreate.value,
+            image:uploadImg,
+            adult:false
+          }
+         console.log(createNewBox);
+          data.unshift(createNewBox)
+          myApi(data);
+          addBoxModal.style.display = "none";
+          localStorage.setItem('updatedData',JSON.stringify(data))
+        })
+       
+      });
 
-            closeUpdate.addEventListener('click',(e)=>{
-              modalUpdate.style.display='none'
-            })
+    
 
-      // ************   Delete button funksionallgi  **********//
+         // ************   Delete button funksionallgi  **********//
+
+
 
       const deleteBtn = document.querySelectorAll(".deleteBtn");
 
       deleteBtn.forEach((item) => {
         item.addEventListener("click", (e) => {
-         
           const getID = Number(e.target.getAttribute("id"));
 
           data = data.filter((item) => item.id !== getID);
 
           myApi(data);
-          localStorage.setItem("deletedData", JSON.stringify(data));
+          localStorage.setItem("updatedData", JSON.stringify(data));
         });
       });
+
+
+
       // ************   Read button funksionallgi  **********//
+
+
+
 
       const readBtn = document.querySelectorAll(".readBtn");
       const modal = document.querySelector(".modal");
@@ -230,8 +314,6 @@ fetch("https://fakestoreapi.com/products")
         </div>
             
             `;
-
-              
             }
 
             // ****** x divine  klik edəndə modalın bağlanılması üçün.******//
@@ -247,10 +329,7 @@ fetch("https://fakestoreapi.com/products")
           modal.style.display = "flex";
         });
       });
-
-
-
     }
+
     myApi(data);
   });
-
